@@ -1,0 +1,67 @@
+schema public:
+
+"agenda"
+- id // int8
+- name // varchar
+- key // varchar
+- wallpaper_url // text
+- creator_id // Foreign Key: auth.users.id
+- created_at // timestamptz
+
+"agenda_anchor"
+- id // int8
+- agenda_id // Foreign Key: public.agenda.id
+- whom_id // Foreign Key: auth.users.id
+- created_at // timestamptz
+
+"editor"
+- id // int8
+- agenda_id // Foreign Key: public.agenda.id
+- user_id // Foreign Key: auth.users.id
+- created_at // timestamptz
+
+"editor_subject"
+- id // int8
+- subject_id // Foreign Key: public.subject.id
+- agenda_id // Foreign Key: public.agenda.id
+- editor_id // Foreign Key: auth.users.id
+- created_at // timestamptz
+
+"element"
+- id // int8
+- details // text
+- attachments_urls // text (NULLABLE)
+- priority // int2 (1=baja, 2=media, 3=alta)
+- deadline // date
+- subject_id // Foreign Key: public.subject.id (NULLABLE)
+- agenda_id // Foreign Key: public.agenda.id
+- creator_id // Foreign Key: auth.users.id
+- updated_at // timestamptz
+
+"element_complete"
+- id // int8
+- element_id // Foreign Key: public.element.id
+- agenda_id // Foreign Key: public.agenda.id
+- whom_id // Foreign Key: auth.users.id
+- created_at // timestamptz
+
+"member"
+- id // int8
+- agenda_id // Foreign Key: public.agenda.id
+- user_id // Foreign Key: auth.users.id
+- created_at // timestamptz
+
+"profile"
+- id // Foreign Key: auth.users.id
+- username // varchar
+- language // text
+- wallpaper_url // text
+- background_url // text
+- updated_at // timestamptz
+
+"subject"
+- id // int8
+- name // varchar
+- agenda_id // Foreign Key: public.agenda.id
+- creator_id // Foreign Key: auth.users.id
+- created_at // timestamptz
