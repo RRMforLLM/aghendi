@@ -2,8 +2,8 @@ import { BottomSheet } from '@/components/BottomSheet';
 import { ThemedInput } from '@/components/ThemedInput';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@rneui/themed';
 import { useState } from 'react';
 import { Alert, StyleSheet } from 'react-native';
 

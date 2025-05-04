@@ -3,9 +3,9 @@ import { BottomSheet } from '@/components/BottomSheet';
 import { ThemedInput } from '@/components/ThemedInput';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/Button';
 import { supabase } from '@/lib/supabase';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Button } from '@rneui/themed';
 import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
