@@ -39,6 +39,7 @@ export function Button({
   raised = false,
   size = 'medium',
 }: ButtonProps) {
+  const isSolid = type === 'solid';
   const isOutline = type === 'outline';
   const isClear = type === 'clear';
 
@@ -77,11 +78,19 @@ export function Button({
       baseStyles.elevation = 5;
     }
 
+    if (isSolid) {
+      return {
+        ...baseStyles,
+        backgroundColor: '#0d6efd',
+      };
+    }
+
     if (isOutline) {
       return {
         ...baseStyles,
         backgroundColor: 'transparent',
         borderWidth: 1,
+        borderColor: '#0d6efd',
       };
     }
 
@@ -112,6 +121,13 @@ export function Button({
         break;
     }
 
+    if (isSolid) {
+      return {
+        ...baseStyles,
+        color: '#ffffff',
+      };
+    }
+
     if (isOutline || isClear) {
       return {
         ...baseStyles,
@@ -119,10 +135,7 @@ export function Button({
       };
     }
 
-    return {
-      ...baseStyles,
-      color: '#ffffff',
-    };
+    return baseStyles;
   };
 
   const shouldShowIconOnRight = iconRight || iconPosition === 'right';
@@ -136,7 +149,7 @@ export function Button({
         activeOpacity={0.7}
       >
         {loading ? (
-          <ActivityIndicator color={isOutline || isClear ? '#0d6efd' : '#ffffff'} />
+          <ActivityIndicator color={isSolid ? '#ffffff' : '#0d6efd'} />
         ) : (
           <>
             {!shouldShowIconOnRight && icon && (
