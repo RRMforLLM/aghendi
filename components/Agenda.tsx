@@ -66,6 +66,7 @@ export type Element = {
   priority: 1 | 2 | 3;
   deadline: string;
   subject_id: number | null;
+  agenda_id: number;
   subject?: {
     name: string | null;
   } | null;
@@ -110,6 +111,8 @@ export function Agenda({ agenda, onClose }: AgendaProps) {
   const [isInitializing, setIsInitializing] = useState(true);
   const [isLoadingItems, setIsLoadingItems] = useState(false);
   const [items, setItems] = useState<Element[]>([]);
+  const [completedItems, setCompletedItems] = useState<Element[]>([]);
+  const [showCompleted, setShowCompleted] = useState(false);
   const [error, setError] = useState({ hasError: false, message: '', isRetrying: false });
   const [wallpaperUrl, setWallpaperUrl] = useState<string | null>(null);
 
@@ -135,6 +138,10 @@ export function Agenda({ agenda, onClose }: AgendaProps) {
           }
         }
 
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Get all items for the agenda
         const itemsPromise = supabase
           .from('element')
           .select(`
@@ -143,6 +150,7 @@ export function Agenda({ agenda, onClose }: AgendaProps) {
             priority,
             deadline,
             subject_id,
+            agenda_id,
             subject:subject_id (
               name
             )
@@ -156,12 +164,27 @@ export function Agenda({ agenda, onClose }: AgendaProps) {
         });
         
         if (error) throw error;
+
+        // Get completed items
+        const { data: completedItems } = await supabase
+          .from('element_complete')
+          .select('element_id')
+          .eq('whom_id', user.id);
+
+        const completedIds = new Set(completedItems?.map(item => item.element_id) || []);
+
         if (data) {
           const formattedItems = data.map(item => ({
             ...item,
             subject: item.subject || null
           }));
-          setItems(formattedItems as Element[]);
+
+          // Split items into completed and non-completed
+          const completed = formattedItems.filter(item => completedIds.has(item.id));
+          const nonCompleted = formattedItems.filter(item => !completedIds.has(item.id));
+
+          setCompletedItems(completed as Element[]);
+          setItems(nonCompleted as Element[]);
         }
       } catch (error: any) {
         console.error('Error initializing agenda:', error);
@@ -362,21 +385,40 @@ export function Agenda({ agenda, onClose }: AgendaProps) {
         )}
 
         <View style={styles.container}>
-          {items.length === 0 ? (
+          {(showCompleted ? completedItems : items).length === 0 ? (
             <ThemedView style={styles.emptyContainer}>
               <ThemedText style={styles.emptyText}>
-                No items yet. {agenda.isEditor || agenda.isCreator ? 'Add some items to get started!' : 'Check back later!'}
+                {showCompleted 
+                  ? 'No completed items yet.'
+                  : 'No items yet. ' + (agenda.isEditor || agenda.isCreator ? 'Add some items to get started!' : 'Check back later!')}
               </ThemedText>
             </ThemedView>
           ) : (
             <AgendaItems 
-              items={items}
+              items={showCompleted ? completedItems : items}
               isEditor={agenda.isEditor || agenda.isCreator}
               onRefresh={() => setShouldRefreshItems(prev => !prev)}
               onEditItem={handleEditItem}
+              isCompletedView={showCompleted}
             />
           )}
         </View>
+
+        <ThemedView style={styles.toggleContainer}>
+          <Button
+            onPress={() => setShowCompleted(!showCompleted)}
+            type="clear"
+            icon={
+              <IconSymbol 
+                name={showCompleted ? "checkmark.circle.fill" : "circle"} 
+                size={24} 
+                color={Colors[colorScheme ?? 'light'].tint}
+              />
+            }
+            title={showCompleted ? "Show Active Items" : "Show Completed Items"}
+            titleStyle={styles.toggleButtonText}
+          />
+        </ThemedView>
       </ParallaxScrollView>
 
       <AddItemSheet
@@ -513,5 +555,12 @@ const styles = StyleSheet.create({
   },
   retryButton: {
     color: '#007bff',
+  },
+  toggleContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  toggleButtonText: {
+    marginLeft: 8,
   },
 });
