@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.aghendi.app"
+      "bundleIdentifier": "com.rrmforllm.aghendi"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +19,7 @@
       },
       "edgeToEdgeEnabled": true,
       "versionCode": 26,
-      "package": "com.aghendi.app"
+      "package": "com.rrmforllm.aghendi"
     },
     "web": {
       "bundler": "metro",
