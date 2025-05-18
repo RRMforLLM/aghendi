@@ -17,7 +17,9 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "versionCode": 26,
+      "package": "com.aghendi.app"
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +40,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b8c3a17f-ff06-4bbe-a165-755da48f28b7"
+      }
     }
   }
 }
